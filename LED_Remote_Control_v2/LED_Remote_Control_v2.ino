@@ -1,5 +1,5 @@
 //author: Benjamin Koderisch
-//version: Beta 2.0, 25.10.16
+//version: 0.3 beta, 26.10.16
 
 #include "RGBdriver.h"
 #include <IRremote.h>
@@ -16,6 +16,8 @@ RGBdriver Driver(CLK,DIO);
 int mFlag = 1; //flag for the current modus | bsp. 1, 2, 3...
 int sFlag = 0; //flag for the current status | bsp. 1 for off
 int btn;
+int vipFlag; // when the sFlag is 0 and a button is pressed it switches 
+             // to Flag 1 and go into the if loop 
 
 void setup(){ 
   pinMode(btnPin, INPUT);
@@ -25,39 +27,26 @@ void setup(){
 void loop(){ 
   Driver.begin();
   Serial.begin(9200);
-  
-  
-  if(irrecv.decode(&results)){
-    Serial.println(btn);
-    btn = btnPressed(results.value);
-    if(mFlag != btn || btn < 10){
-      mFlag = btn;
-    }
-    else{
-      
-      // right
-      if(btn == 13){
-        mFlag = mFlag+1;
-        if(mFlag == 10)
-          mFlag = 1;
-      }
-       
-      // left
-      if(btn == 11){
-        mFlag = mFlag-1;
-        if(mFlag == 0)
-          mFlag = 9;  
-      }
-      
-    }
-
-    newMFlag();
-    irrecv.resume();
-  }  
+  switch(sFlag){
+    case 0:
+      case0();
+      break;
+    case 1:
+      case1();
+      break;
+    case 2:
+      case2();
+      break;
+  }
 }
+
 
 void newMFlag(){
   switch(mFlag){
+    // off
+    case 0:
+      setColor(0,0,0);
+      break;
     case 1:
       setColor(255,255,255);
       break;
@@ -89,10 +78,56 @@ void newMFlag(){
   }
 }
 
+// sFlag = 0
+void case2();
+  setColor(0,0,0);
+  if(irrecv.decode(&results)){
+    sFlag = 1
+    btn = btnPressed(results.value);
+    vipFlag = 1;
+  }
+
+// sFlag = 1
+void case1(){
+  if(irrecv.decode(&results) || vipFlag == 1){
+    Serial.println(btn);
+    if(vipFlag != 1){
+      btn = btnPressed(results.value);
+    }
+    if(mFlag != btn || btn < 10){
+      mFlag = btn;
+    }
+    else{
+      
+      // right
+      if(btn == 13){
+        mFlag = mFlag+1;
+        if(mFlag == 10)
+          mFlag = 1;
+      }
+       
+      // left
+      if(btn == 11){
+        mFlag = mFlag-1;
+        if(mFlag == 0)
+          mFlag = 9;  
+      } 
+
+      // 0, ok when vipFlag is 0
+      if((vipFlag == 0)&&(btn == 16 || btn == 12)){
+        mFlag = 0;
+      }     
+    }
+    vipFlag = 0;
+    newMFlag();
+    irrecv.resume();
+  } 
+} 
+
+// set the color
 void setColor(int r, int g, int b){
   Driver.SetColor(r,g,b);
 }
-
 
 
 int btnPressed(int value){
