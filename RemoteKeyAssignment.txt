@@ -1,3 +1,6 @@
+// Remote Key Assignment | key - HEX code - btn code
+// Benjamin Koderisch
+
 Up:     FF629D	10
 Left:   FF22DD	11
 OK:     FF02FD	12

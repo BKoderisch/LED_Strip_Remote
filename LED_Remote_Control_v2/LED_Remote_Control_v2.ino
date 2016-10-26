@@ -1,5 +1,5 @@
 //author: Benjamin Koderisch
-//version: 2.0, 25.10.16
+//version: Beta 2.0, 25.10.16
 
 #include "RGBdriver.h"
 #include <IRremote.h>
