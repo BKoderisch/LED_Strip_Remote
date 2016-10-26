@@ -1,5 +1,5 @@
 //author: Benjamin Koderisch
-//version: 0.3 beta, 26.10.16
+//version: 0.3.1 beta, 26.10.16
 
 #include "RGBdriver.h"
 #include <IRremote.h>
@@ -79,7 +79,7 @@ void newMFlag(){
 }
 
 // sFlag = 0
-void case2();
+void case0();
   setColor(0,0,0);
   if(irrecv.decode(&results)){
     sFlag = 1
@@ -115,7 +115,7 @@ void case1(){
 
       // 0, ok when vipFlag is 0
       if((vipFlag == 0)&&(btn == 16 || btn == 12)){
-        mFlag = 0;
+        sFlag = 0;
       }     
     }
     vipFlag = 0;
